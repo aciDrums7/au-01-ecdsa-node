@@ -1,0 +1,12 @@
+{
+    "name": "Alchemy University - 01 - ECDSA Node",
+    "version": "1.0.0",
+    "description": "",
+    "main": "",
+    "keywords": [],
+    "author": "aciDrums",
+    "license": "ISC",
+    "devDependencies": {
+        "prettier": "^2.8.8"
+    }
+}
