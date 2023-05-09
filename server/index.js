@@ -2,21 +2,56 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const port = 3042
+const fs = require('fs')
+const genRecoveryObj = require('./scripts/genRecoveryObj')
+const log = console.log
 
 app.use(cors())
 app.use(express.json())
 
-const balances = {
-    '02540499078c979a7e55b098e53960778349a12be84ba68ce6b65318ef0e3a2e62': 100,
-    '026f76ee9c35fb47de90c5c6b11a826977ffd57b14f09d5c25717e7c93ad0b91ce': 50,
-    '02bc648abd8922f8b56ecb8843c557aa44a1ac690b54e3f58300d91741c8d0a2a0': 75,
+const initializeRecoveryObjFile = () => {
+    let isFileAlreadyPopulated = false
+    try {
+        file = fs.readFileSync('../recoveryObjectsList.json', 'utf-8')
+        if (file !== '') isFileAlreadyPopulated = true
+    } catch (err) {
+    } finally {
+        if (!isFileAlreadyPopulated) {
+            const msgPrivateKeyPairs = [
+                {
+                    message: '21stCentury',
+                    privateKey:
+                        '248fe80eaab7194fc8675175f7baa3f6ece51aa6338f2f04d71d6b08422226cb',
+                },
+                {
+                    message: 'Schizoid',
+                    privateKey:
+                        'e0ba4bcc066f8333a926915049eb87da122715be86b546efcb416c9da9f4c939',
+                },
+                {
+                    message: 'Man!',
+                    privateKey:
+                        '245a1f3ffa5afa11f9257c8b86f915740b2a1a5900076edc2d9ac4af465ecf10',
+                },
+            ]
+            msgPrivateKeyPairs.forEach((pair) => {
+                genRecoveryObj(
+                    pair.message,
+                    pair.privateKey,
+                    isFileAlreadyPopulated
+                )
+                isFileAlreadyPopulated = true
+            })
+        }
+    }
 }
 
-app.get('/balance/:address', (req, res) => {
-    // TODO: get a signature from the client-side application
-    // TODO: recover the public address form the signature
-    const { address } = req.params
-    const balance = balances[address] || 0
+app.get('/balance/:signatureHex', (req, res) => {
+    const { signatureHex } = req.params
+    const balance =
+        recoveryObjectsList.find(
+            (recoveryObject) => recoveryObject.signatureHex === signatureHex
+        ).balance || 0
     res.send({ balance })
 })
 
@@ -36,11 +71,12 @@ app.post('/send', (req, res) => {
 })
 
 app.listen(port, () => {
+    initializeRecoveryObjFile()
     console.log(`Listening on port ${port}!`)
 })
 
-function setInitialBalance(address) {
-    if (!balances[address]) {
-        balances[address] = 21
+function setInitialBalance(signature) {
+    if (!balances[signature]) {
+        balances[signature] = 21
     }
 }

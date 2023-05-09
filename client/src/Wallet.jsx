@@ -1,18 +1,39 @@
 import server from './server'
-
+import fs from 'fs'
 import * as secp from 'ethereum-cryptography/secp256k1'
-import { toHex } from 'ethereum-cryptography/utils'
+import { toHex, hexToBytes } from 'ethereum-cryptography/utils'
 
-function Wallet({ address, setAddress, balance, setBalance, privateKey, setPrivateKey }) {
-    async function onChange(evt) {
-        const privateKey = evt.target.value
-        setPrivateKey(privateKey)
-        const address = toHex(secp.secp256k1.getPublicKey(privateKey))
-        setAddress(address)
-        if (address) {
+function Wallet({
+    signatureHex,
+    setSignatureHex,
+    balance,
+    setBalance,
+    address,
+    setAddress,
+}) {
+    async function onChange(event) {
+        // TODO: finish to implement the get flow
+        const inputSign = event.target.value
+        setSignatureHex(inputSign)
+        const recoveryObj = recoveryObjectsList.find(
+            (recObj) => recObj.signatureHex === inputSign
+        )
+        if (recoveryObj) {
+            try {
+                const address = await toHex(
+                    secp.recoverPublicKey(
+                        recoveryObj.hashedMessage,
+                        recoveryObj.signatureHex,
+                        recoveryObj.recoveryBit
+                    )
+                )
+            } catch (error) {
+                console.log(error)
+            }
+            setAddress(address)
             const {
                 data: { balance },
-            } = await server.get(`balance/${address}`)
+            } = await server.get(`balance/${inputSign}`)
             setBalance(balance)
         } else {
             setBalance(0)
@@ -24,8 +45,12 @@ function Wallet({ address, setAddress, balance, setBalance, privateKey, setPriva
             <h1>Your Wallet</h1>
 
             <label>
-                Private Key
-                <input placeholder="Type in a private key" value={privateKey} onChange={onChange}></input>
+                Signature
+                <input
+                    placeholder="Type in a signature"
+                    value={signatureHex}
+                    onChange={onChange}
+                ></input>
             </label>
 
             <div>
