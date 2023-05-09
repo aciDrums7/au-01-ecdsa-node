@@ -13,8 +13,8 @@ const balances = {
 }
 
 app.get('/balance/:address', (req, res) => {
-  // TODO: get a signature from the client-side application
-  // TODO: recover the public address form the signature
+    // TODO: get a signature from the client-side application
+    // TODO: recover the public address form the signature
     const { address } = req.params
     const balance = balances[address] || 0
     res.send({ balance })
@@ -41,6 +41,6 @@ app.listen(port, () => {
 
 function setInitialBalance(address) {
     if (!balances[address]) {
-        balances[address] = 0
+        balances[address] = 21
     }
 }

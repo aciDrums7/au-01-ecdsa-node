@@ -3,14 +3,7 @@ import server from './server'
 import * as secp from 'ethereum-cryptography/secp256k1'
 import { toHex } from 'ethereum-cryptography/utils'
 
-function Wallet({
-    address,
-    setAddress,
-    balance,
-    setBalance,
-    privateKey,
-    setPrivateKey,
-}) {
+function Wallet({ address, setAddress, balance, setBalance, privateKey, setPrivateKey }) {
     async function onChange(evt) {
         const privateKey = evt.target.value
         setPrivateKey(privateKey)
@@ -32,14 +25,12 @@ function Wallet({
 
             <label>
                 Private Key
-                <input
-                    placeholder="Type in a private key"
-                    value={privateKey}
-                    onChange={onChange}
-                ></input>
+                <input placeholder="Type in a private key" value={privateKey} onChange={onChange}></input>
             </label>
 
-            <div>Address: {address.slice(0, 5)}...{address.slice(-5)}</div>
+            <div>
+                Address: {address.slice(0, 5)}...{address.slice(-5)}
+            </div>
 
             <div className="balance">Balance: {balance}</div>
         </div>
