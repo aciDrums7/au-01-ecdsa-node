@@ -12,8 +12,8 @@
     },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "keyPair": "node scripts/getKeyPair.js",
-        "sign": "node scripts/getSignature.js"
+        "create-key-pair": "node utils/create-key-pair.js",
+        "create-wallet": "node utils/create-wallet-from-terminal.js"
     },
     "keywords": [],
     "author": "",
