@@ -12,7 +12,7 @@ function Transfer({ address, setBalance }) {
         let formErrorMessage
         if (address === '' || recipient === '' || amountToSend === '')
             formErrorMessage = 'Fullfill the form before transfer please!'
-        if(!formErrorMessage) {
+        if (!formErrorMessage) {
             try {
                 const {
                     data: { senderUpdatedBalance },

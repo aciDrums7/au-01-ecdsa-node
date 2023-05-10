@@ -9,9 +9,7 @@ function Wallet({ balance, setBalance, address, setAddress }) {
         setSignatureHex(inputSign)
         if (inputSign !== '') {
             try {
-                const { data: wallet } = await server.get(
-                    `/getWallet/${inputSign}`
-                )
+                const { data: wallet } = await server.get(`/getWallet/${inputSign}`)
                 setAddress(wallet.address)
                 setBalance(wallet.balance)
             } catch (err) {
@@ -41,8 +39,8 @@ function Wallet({ balance, setBalance, address, setAddress }) {
             <div>
                 Address:{' '}
                 {address !== '404 - Not Found' && address !== ''
-                    ? (`${address.slice(0, 5)}...${address.slice(-5)}`)
-                    : (address)}
+                    ? `${address.slice(0, 5)}...${address.slice(-5)}`
+                    : address}
             </div>
 
             <div className="balance">Balance: {balance}</div>
