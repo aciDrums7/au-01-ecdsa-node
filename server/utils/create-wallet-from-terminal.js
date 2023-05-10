@@ -1,5 +1,5 @@
 const { Input } = require('enquirer')
-const genRecoveryObj = require('./scripts/genRecoveryObj')
+const createWallet = require('./create-wallet')
 
 const askMessage = new Input({
     name: 'message to sign',
@@ -11,10 +11,10 @@ const askPrivateKey = new Input({
     message: 'Write your private key',
 })
 
-const runFromConsole = async () => {
+async function runFromConsole() {
     const message = await askMessage.run()
     const privateKey = await askPrivateKey.run()
-    genRecoveryObj(message, privateKey)
+    createWallet(message, privateKey, true)
 }
 
 runFromConsole()

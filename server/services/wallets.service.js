@@ -1,15 +1,24 @@
-const fs = require('fs')
+const { WALLETS_TABLE_PATH } = require('../utils/constants')
+const { readFile, writeFile } = require('../utils/file-manager')
 
-const transferAmount = (sender, recipient, amount) => {
+function getWalletBySignature(signatureHex) {
+    wallet = JSON.parse(readFile(WALLETS_TABLE_PATH)).find(
+        (wallet) => wallet.signatureHex === signatureHex
+    )
+    if (!wallet) throw new Error('Wallet not found!')
+    return wallet
+}
+
+function transferAmount(sender, recipient, amount) {
     let isSenderFound = false
     try {
-        walletsList = JSON.parse(fs.readFileSync('db/walletsTable.json', 'utf8'))
+        walletsList = JSON.parse(readFile(WALLETS_TABLE_PATH))
         senderUpdatedBalance = walletsList.find((wallet) => wallet.address === sender).balance -=
             amount
         if (senderUpdatedBalance < 0) throw new Error('Not enough funds!')
         isSenderFound = true
         walletsList.find((wallet) => wallet.address === recipient).balance += amount
-        fs.writeFileSync('db/walletsTable.json', JSON.stringify(walletsList, null, 4), 'utf8')
+        writeFile(WALLETS_TABLE_PATH, JSON.stringify(walletsList, null, 4))
         return senderUpdatedBalance
     } catch (error) {
         let errorMessage
@@ -22,4 +31,7 @@ const transferAmount = (sender, recipient, amount) => {
     }
 }
 
-module.exports = transferAmount
+module.exports = {
+    transferAmount,
+    getWalletBySignature,
+}

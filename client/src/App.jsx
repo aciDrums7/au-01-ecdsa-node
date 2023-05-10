@@ -15,7 +15,7 @@ function App() {
                 address={address}
                 setAddress={setAddress}
             />
-            <Transfer setBalance={setBalance} address={address} />
+            <Transfer setBalance={setBalance} senderAddress={address} />
         </div>
     )
 }

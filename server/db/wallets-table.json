@@ -8,14 +8,14 @@
     },
     {
         "address": "046f76ee9c35fb47de90c5c6b11a826977ffd57b14f09d5c25717e7c93ad0b91ceca82362d98735aa2c043432d166c716f854ea68c290eb86f77aef5a99a6a385c",
-        "balance": 21,
+        "balance": 31,
         "hashedMessage": "b0c9aee5c4b752a70d3ba5fcd1be7e66c241d6559cb7e91ab02dd5ed48230fcf",
         "signatureHex": "304402207fa2c117b550a55c5ae405cd0aeec364b1b95b0c3d1e52d063f215ae96eb3c9102202c64922e7007d2104114c3568ae77267aae999a70dbdfb72440785c2409ed39a",
         "recoveryBit": 1
     },
     {
         "address": "04bc648abd8922f8b56ecb8843c557aa44a1ac690b54e3f58300d91741c8d0a2a00e093e723f2830409426dd8f2a943170fa2d01ea21837961a11e597539e32480",
-        "balance": 97,
+        "balance": 69,
         "hashedMessage": "0b74933e0b5750c4e0c57a06fd7ac734b26b63046334adf1476ed9aa73ff1fdf",
         "signatureHex": "3045022100d3df0242598bca305bf5daf81b42c5a98bab339a0b4235475ef326aff1f84f2002203cab10b5184922fa980e317b8e20db62a81a9e6e2ef47bf3a54b2b675b51abd1",
         "recoveryBit": 1

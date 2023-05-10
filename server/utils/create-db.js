@@ -1,11 +1,14 @@
-const createWallet = require('./createWallet')
+const { readFile, writeFile } = require('./file-manager')
+const { WALLETS_TABLE_PATH } = require('./constants')
+const createWallet = require('./create-wallet')
 
-const createDb = () => {
+function createDb() {
     let isFileAlreadyPopulated = false
     try {
-        file = fs.readFileSync('db/walletsTable.json', 'utf-8')
-        if (file !== '') isFileAlreadyPopulated = true
-    } catch (err) {
+        walletsTable = readFile(WALLETS_TABLE_PATH)
+        if (walletsTable !== '') isFileAlreadyPopulated = true
+    } catch (error) {
+        writeFile(WALLETS_TABLE_PATH, '')
     } finally {
         if (!isFileAlreadyPopulated) {
             const msgPrivateKeyPairs = [

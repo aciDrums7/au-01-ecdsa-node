@@ -5,11 +5,11 @@ function Wallet({ balance, setBalance, address, setAddress }) {
     const [signatureHex, setSignatureHex] = useState('')
 
     async function onChange(event) {
-        const inputSign = event.target.value
-        setSignatureHex(inputSign)
-        if (inputSign !== '') {
+        const inputSignature = event.target.value
+        setSignatureHex(inputSignature)
+        if (inputSignature !== '' && inputSignature.length > 100) {
             try {
-                const { data: wallet } = await server.get(`/getWallet/${inputSign}`)
+                const { data: wallet } = await server.get(`/getWallet/${inputSignature}`)
                 setAddress(wallet.address)
                 setBalance(wallet.balance)
             } catch (err) {
@@ -18,8 +18,9 @@ function Wallet({ balance, setBalance, address, setAddress }) {
                 throw err
             }
         } else {
-            setAddress('')
             setBalance(0)
+            if (inputSignature !== '') setAddress('404 - Not Found')
+            else setAddress('')
         }
     }
 
