@@ -1,41 +1,26 @@
+import { useState } from 'react'
 import server from './server'
-import fs from 'fs'
-import * as secp from 'ethereum-cryptography/secp256k1'
-import { toHex, hexToBytes } from 'ethereum-cryptography/utils'
 
-function Wallet({
-    signatureHex,
-    setSignatureHex,
-    balance,
-    setBalance,
-    address,
-    setAddress,
-}) {
+function Wallet({ balance, setBalance, address, setAddress }) {
+    const [signatureHex, setSignatureHex] = useState('')
+
     async function onChange(event) {
-        // TODO: finish to implement the get flow
         const inputSign = event.target.value
         setSignatureHex(inputSign)
-        const recoveryObj = recoveryObjectsList.find(
-            (recObj) => recObj.signatureHex === inputSign
-        )
-        if (recoveryObj) {
+        if (inputSign !== '') {
             try {
-                const address = await toHex(
-                    secp.recoverPublicKey(
-                        recoveryObj.hashedMessage,
-                        recoveryObj.signatureHex,
-                        recoveryObj.recoveryBit
-                    )
+                const { data: wallet } = await server.get(
+                    `/getWallet/${inputSign}`
                 )
-            } catch (error) {
-                console.log(error)
+                setAddress(wallet.address)
+                setBalance(wallet.balance)
+            } catch (err) {
+                setBalance(0)
+                setAddress('404 - Not Found')
+                throw err
             }
-            setAddress(address)
-            const {
-                data: { balance },
-            } = await server.get(`balance/${inputSign}`)
-            setBalance(balance)
         } else {
+            setAddress('')
             setBalance(0)
         }
     }
@@ -54,7 +39,10 @@ function Wallet({
             </label>
 
             <div>
-                Address: {address.slice(0, 5)}...{address.slice(-5)}
+                Address:{' '}
+                {address !== '404 - Not Found' && address !== ''
+                    ? (`${address.slice(0, 5)}...${address.slice(-5)}`)
+                    : (address)}
             </div>
 
             <div className="balance">Balance: {balance}</div>

@@ -2,12 +2,12 @@ const fs = require('fs')
 const { keccak256 } = require('ethereum-cryptography/keccak')
 const { utf8ToBytes, toHex } = require('ethereum-cryptography/utils')
 const secp = require('ethereum-cryptography/secp256k1')
-const RecoveryObject = require('../models/recovery-object.model')
+const RecoveryObject = require('../models/wallet.model')
 const log = console.log
 
-const genRecoveryObj = async (message, privateKey, isFileAlreadyPopulated) => {
+const createWallet = async (message, privateKey, isFileAlreadyPopulated) => {
     try {
-        const hashedMessage = keccak256(utf8ToBytes(message))
+        const hashedMessage = toHex(keccak256(utf8ToBytes(message)))
         const [signature, recoveryBit] = await secp.sign(
             hashedMessage,
             privateKey,
@@ -15,12 +15,14 @@ const genRecoveryObj = async (message, privateKey, isFileAlreadyPopulated) => {
                 recovered: true,
             }
         )
+        address = toHex(secp.getPublicKey(privateKey))
         randomBalance = Math.floor(Math.random() * 100)
         recoveryObject = new RecoveryObject(
+            address,
+            randomBalance,
             hashedMessage,
             toHex(signature),
-            recoveryBit,
-            randomBalance
+            recoveryBit
         )
         createOrInitializeFile(recoveryObject, isFileAlreadyPopulated)
     } catch (error) {
@@ -32,7 +34,7 @@ const createOrInitializeFile = (recoveryObject, isFileAlreadyPopulated) => {
     if (!isFileAlreadyPopulated) {
         try {
             fs.writeFileSync(
-                '../recoveryObjectsList.json',
+                './db/walletsTable.json',
                 `[
                ${JSON.stringify(recoveryObject, null, 4)}
                ]`,
@@ -42,21 +44,21 @@ const createOrInitializeFile = (recoveryObject, isFileAlreadyPopulated) => {
             throw err
         }
     } else {
-        pushToFile(recoveryObject, isFileAlreadyPopulated)
+        pushToDb(recoveryObject, isFileAlreadyPopulated)
     }
 }
 
-const pushToFile = (recoveryObject, isFileAlreadyPopulated) => {
+const pushToDb = (recoveryObject, isFileAlreadyPopulated) => {
     try {
         recoveryObjectFile = fs.readFileSync(
-            '../recoveryObjectsList.json',
+            './db/walletsTable.json',
             'utf8'
         )
-        recoveryObjectsList = JSON.parse(recoveryObjectFile)
-        recoveryObjectsList.push(recoveryObject)
+        walletsTable = JSON.parse(recoveryObjectFile)
+        walletsTable.push(recoveryObject)
         fs.writeFileSync(
-            '../recoveryObjectsList.json',
-            JSON.stringify(recoveryObjectsList, null, 4),
+            './db/walletsTable.json',
+            JSON.stringify(walletsTable, null, 4),
             'utf-8'
         )
     } catch (err) {
@@ -64,4 +66,4 @@ const pushToFile = (recoveryObject, isFileAlreadyPopulated) => {
     }
 }
 
-module.exports = genRecoveryObj
+module.exports = createWallet

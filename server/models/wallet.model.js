@@ -1,9 +1,10 @@
 class RecoveryObject {
-    constructor(hashedMessage, signatureHex, recoveryBit, balance) {
+    constructor(address, balance, hashedMessage, signatureHex, recoveryBit) {
+        this.address = address
+        this.balance = balance
         this.hashedMessage = hashedMessage
         this.signatureHex = signatureHex
         this.recoveryBit = recoveryBit
-        this.balance = balance
     }
 }
 

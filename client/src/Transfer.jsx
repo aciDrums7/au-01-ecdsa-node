@@ -2,25 +2,32 @@ import { useState } from 'react'
 import server from './server'
 
 function Transfer({ address, setBalance }) {
-    const [sendAmount, setSendAmount] = useState('')
+    const [amountToSend, setAmountToSend] = useState('')
     const [recipient, setRecipient] = useState('')
 
     const setValue = (setter) => (evt) => setter(evt.target.value)
 
     async function transfer(evt) {
         evt.preventDefault()
-
-        try {
-            const {
-                data: { balance },
-            } = await server.post(`send`, {
-                sender: address,
-                amount: parseInt(sendAmount),
-                recipient,
-            })
-            setBalance(balance)
-        } catch (ex) {
-            alert(ex.response.data.message)
+        let formErrorMessage
+        if (address === '' || recipient === '' || amountToSend === '')
+            formErrorMessage = 'Fullfill the form before transfer please!'
+        if(!formErrorMessage) {
+            try {
+                const {
+                    data: { senderUpdatedBalance },
+                } = await server.post(`transferAmount`, {
+                    sender: address,
+                    amount: parseInt(amountToSend),
+                    recipient,
+                })
+                setBalance(senderUpdatedBalance)
+                alert('Transfer completed successfully!')
+            } catch (error) {
+                alert(error.response.data.message)
+            }
+        } else {
+            alert(formErrorMessage)
         }
     }
 
@@ -32,8 +39,8 @@ function Transfer({ address, setBalance }) {
                 Send Amount
                 <input
                     placeholder="1, 2, 3..."
-                    value={sendAmount}
-                    onChange={setValue(setSendAmount)}
+                    value={amountToSend}
+                    onChange={setValue(setAmountToSend)}
                 ></input>
             </label>
 
