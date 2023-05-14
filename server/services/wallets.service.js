@@ -1,37 +1,21 @@
-const { WALLETS_TABLE_PATH } = require('../utils/constants')
-const { readFile, writeFile } = require('../utils/file-manager')
+import { WALLETS_TABLE_PATH } from '../utils/constants.js'
+import { readFile, writeFile } from '../utils/file-manager.js'
 
-function getWalletBySignature(signatureHex) {
-    wallet = JSON.parse(readFile(WALLETS_TABLE_PATH)).find(
-        (wallet) => wallet.signatureHex === signatureHex
-    )
-    if (!wallet) throw new Error('Wallet not found!')
-    return wallet
+export async function getWalletBySignature(signature) {
+    return await readFile(WALLETS_TABLE_PATH).find((wallet) => wallet.signature === signature)
 }
 
-function transferAmount(sender, recipient, amount) {
-    let isSenderFound = false
-    try {
-        walletsList = JSON.parse(readFile(WALLETS_TABLE_PATH))
-        senderUpdatedBalance = walletsList.find((wallet) => wallet.address === sender).balance -=
-            amount
-        if (senderUpdatedBalance < 0) throw new Error('Not enough funds!')
-        isSenderFound = true
-        walletsList.find((wallet) => wallet.address === recipient).balance += amount
-        writeFile(WALLETS_TABLE_PATH, JSON.stringify(walletsList, null, 4))
-        return senderUpdatedBalance
-    } catch (error) {
-        let errorMessage
-        if (error.message === 'Not enough funds!') errorMessage = error.message
-        else {
-            if (!isSenderFound) errorMessage = 'Sender wallet not found!'
-            else errorMessage = 'Recipient wallet not found!'
-        }
-        throw new Error(errorMessage)
+export async function transferAmount(sender, recipient, amount) {
+    walletsList = JSON.parse(await readFile(WALLETS_TABLE_PATH))
+    senderBalance = walletsList.find((wallet) => wallet.address === sender).balance
+    if (!senderBalance) throw new Error('Sender not found!')
+    else if (senderBalance - amount < 0) throw new Error('Not enough funds!')
+    recipientBalance = walletsList.find((wallet) => wallet.address === recipient).balance
+    if (!recipientBalance) throw new Error('Recipient not found!')
+    else {
+        senderBalance -= amount
+        recipientBalance += amount
+        writeFile(WALLETS_TABLE_PATH, walletsList)
+        return senderBalance
     }
-}
-
-module.exports = {
-    transferAmount,
-    getWalletBySignature,
 }

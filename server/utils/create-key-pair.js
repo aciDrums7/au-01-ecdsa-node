@@ -1,8 +1,9 @@
-const secp = require('ethereum-cryptography/secp256k1')
-const { toHex } = require('ethereum-cryptography/utils')
+import { utils, getPublicKey } from 'ethereum-cryptography/secp256k1.js'
+import { toHex } from 'ethereum-cryptography/utils.js'
+
 const log = console.log
 
-const privateKey = secp.utils.randomPrivateKey()
-const publicKey = secp.getPublicKey(privateKey)
+const privateKey = utils.randomPrivateKey()
+const publicKey = getPublicKey(privateKey)
 log('\nprivate key:', toHex(privateKey))
 log('\npublic key:', toHex(publicKey), '\n')

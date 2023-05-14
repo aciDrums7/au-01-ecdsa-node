@@ -2,7 +2,8 @@
     "name": "server",
     "version": "1.0.0",
     "description": "",
-    "main": "index.js",
+    "main": "server.js",
+    "type": "module",
     "nodemonConfig": {
         "ext": "js",
         "ignore": [
@@ -11,6 +12,7 @@
         "delay": "2"
     },
     "scripts": {
+        "dev": "node server",
         "test": "echo \"Error: no test specified\" && exit 1",
         "create-key-pair": "node utils/create-key-pair.js",
         "create-wallet": "node utils/create-wallet-from-terminal.js"

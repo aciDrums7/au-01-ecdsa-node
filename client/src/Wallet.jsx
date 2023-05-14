@@ -2,14 +2,14 @@ import { useState } from 'react'
 import server from './server'
 
 function Wallet({ balance, setBalance, address, setAddress }) {
-    const [signatureHex, setSignatureHex] = useState('')
+    const [signature, setSignature] = useState('')
 
     async function onChange(event) {
         const inputSignature = event.target.value
-        setSignatureHex(inputSignature)
+        setSignature(inputSignature)
         if (inputSignature !== '' && inputSignature.length > 100) {
             try {
-                const { data: wallet } = await server.get(`/getWallet/${inputSignature}`)
+                const { data: wallet } = await server.get(`/getWalletBySignature/${inputSignature}`)
                 setAddress(wallet.address)
                 setBalance(wallet.balance)
             } catch (err) {
@@ -32,7 +32,7 @@ function Wallet({ balance, setBalance, address, setAddress }) {
                 Signature
                 <input
                     placeholder="Type in a signature"
-                    value={signatureHex}
+                    value={signature}
                     onChange={onChange}
                 ></input>
             </label>

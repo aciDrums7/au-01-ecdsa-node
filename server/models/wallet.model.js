@@ -1,11 +1,9 @@
-class RecoveryObject {
-    constructor(address, balance, hashedMessage, signatureHex, recoveryBit) {
+export default class Wallet {
+    constructor(address, balance, hashedMessage, signature, recoveryBit) {
         this.address = address
         this.balance = balance
         this.hashedMessage = hashedMessage
-        this.signatureHex = signatureHex
+        this.signature = signature
         this.recoveryBit = recoveryBit
     }
 }
-
-module.exports = RecoveryObject

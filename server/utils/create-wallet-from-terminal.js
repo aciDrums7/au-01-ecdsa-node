@@ -1,5 +1,5 @@
-const { Input } = require('enquirer')
-const createWallet = require('./create-wallet')
+import { Input } from 'enquirer'
+import createWallet from './create-wallet.js'
 
 const askMessage = new Input({
     name: 'message to sign',
@@ -14,7 +14,7 @@ const askPrivateKey = new Input({
 async function runFromConsole() {
     const message = await askMessage.run()
     const privateKey = await askPrivateKey.run()
-    createWallet(message, privateKey, true)
+    await createWallet(message, privateKey)
 }
 
 runFromConsole()

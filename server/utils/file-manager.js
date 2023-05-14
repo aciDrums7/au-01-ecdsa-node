@@ -1,22 +1,9 @@
-const fs = require('fs')
+import { promises } from 'fs'
 
-function readFile(path) {
-    try {
-        return fs.readFileSync(path, 'utf8')
-    } catch (error) {
-        throw new Error(error.message)
-    }
+export async function readFile(path) {
+    return JSON.parse(await promises.readFile(path, 'utf-8'))
 }
 
-function writeFile(path, data) {
-    try {
-        fs.writeFileSync(path, data, 'utf8')
-    } catch (error) {
-        throw new Error(error.message)
-    }
-}
-
-module.exports = {
-    readFile,
-    writeFile,
+export async function writeFile(path, data) {
+    return await promises.writeFile(path, data, 'utf-8')
 }
